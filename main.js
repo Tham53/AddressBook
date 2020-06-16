@@ -1,29 +1,58 @@
-let postArray = [];
-let userArray = []
-const retrieveSinglePosts = () =>{
-  let newPost;
-  fetch('https://randomuser.me/api/')
-    .then(res => res.json())
-    .then(posts => userArray.push(posts))   
-}
-const consolePostsList = () => {
-  console.log(userArray)
-}
-const displayThePost = () => {
-  const allPosts= document.getElementById('all-posts')
-  userArray.map((post, index) => {
-    const li = document.createElement('li')
-    const text = document.createTextNode(`Number${index}, Name: ${post.name.first}:  ${post.body}, by user: ${post.userId}`)
-    li.appendChild(text)
-    allPosts.append(li)
-  })
-}
-const retrieveTheUser = () => {
-  fetch('https://randomuser.me/api/?results=5')
-  .then(res => res.json())
-  .then(posts => postArray = posts)
-}
+window.onload = function() {
+    allUsers();
+  };
 
-const displayTheUsers = () =>{
-  console.log(postArray);
+const newArray = [];
+function get(){
+    fetch('https://randomuser.me/api/')
+      .then( response => response.json())
+        .then(data => {
+            newArray.push(data.results["0"])
+            console.log(newArray);
+        })
+        document.getElementById("contacts").innerHTML = " ";
+        //name and picture list
+        newArray.map(person => {
+            console.log(person);
+            let createLi = document.createElement("li");
+            let contactList = document.getElementById("contacts");
+            let image = document.createElement("img");
+            image.src = person.picture.thumbnail;
+            createLi.appendChild(image);
+            createLi.appendChild(document.createTextNode(person.name.first + " " + person.name.last));
+            contactList.append(createLi);
+        });
+}
+//multiple users
+function allUsers() {
+    let multipleArray = null;
+    fetch('https://randomuser.me/api/?results=5')
+    .then (response => response.json())
+    .then (data => {
+        multipleArray = data.results
+        multipleArray.map(person => {
+        console.log(person);
+        let createAllLi = document.createElement("li");
+        let allContactsList = document.getElementById("allContacts");
+        let allImage = document.createElement("img");
+        
+//more info
+        let button = document.createElement('button');
+        button.addEventListener("click",(e) => {
+            let textBox = document.createElement('p');
+            let pText = document.createTextNode("Cell: " + person.cell + " " + "Age: " + person.dob.age);
+            textBox.appendChild(pText);
+            createAllLi.appendChild(textBox);
+        })
+        allImage.src = person.picture.thumbnail;
+        createAllLi.appendChild(allImage);
+        createAllLi.appendChild(document.createTextNode(person.name.first + " " + person.name.last));
+        createAllLi.appendChild(button);
+        let buttonText = document.createTextNode("More Info");
+        button.appendChild(buttonText);
+        allContactsList.append(createAllLi);
+    })
+      console.log(multipleArray);
+    })
+    document.getElementById("allContacts").innerHTML = " ";
 }
